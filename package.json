@@ -1,0 +1,23 @@
+{
+  "name": "spatial-chat",
+  "version": "1.0.0",
+  "description": "a 3d chatroom so we don't have to stare at a brady bunch wall of people",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/K-Francis-H/spatial-chat.git"
+  },
+  "author": "Kyle Harrity",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/K-Francis-H/spatial-chat/issues"
+  },
+  "homepage": "https://github.com/K-Francis-H/spatial-chat#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^4.1.3"
+  }
+}
