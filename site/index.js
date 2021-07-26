@@ -168,6 +168,25 @@ document.addEventListener("DOMContentLoaded", function(){
 	const canvas = document.getElementById("canvas-gl");
 	const gl = canvas.getContext("webgl2");//maybe figure out if 2 is not available and default to one
 
+	//compile all of our shaders
+	//TEXTURE shader
+	var textureProgram = compileShaderProgram(gl, TEXTURE_VSHADER_SOURCE, TEXTURE_FSHADER_SOURCE);
+	var textureProgramUniforms = ['u_Model', 'u_View', 'u_Projection', 'u_Sampler'];
+	var textureProgramAttribs = ['a_Position', 'a_TexCoord'];
+	prepareProgramVariables(gl, textureProgram, textureProgramUniforms, textureProgramAttribs);
+
+	//LIGHT shader
+	var lightProgram = compileShaderProgram(gl, LIGHT_VSHADER_SOURCE, LIGHT_FSHADER_SOURCE);
+	var lightProgramUniforms = ['u_Model', 'u_View', 'u_Projection', 'u_Color'];
+	var lightProgramAttribs = ['a_Position', 'a_Normal'];
+	prepareProgramVariables(gl, lightProgram, lightProgramUniforms, lightProgramAttribs);
+
+	//PROJ shader
+	var projProgram = compileShaderProgram(gl, PROJ_VSHADER_SOURCE, PROJ_FSHADER_SOURCE);
+	var projProgramUniforms = ['u_Model', 'u_View', 'u_Projection', 'u_Color'];
+	var projProgramAttribs = ['a_Position'];
+	prepareProgramVariables(gl, projProgram, projProgramUniforms, projProgramAttribs);
+
 	//setup shaders see utils from another repo
 
 	//setup camera see Camera.js from another repo
