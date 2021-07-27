@@ -164,7 +164,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		el.target.innerText = localVideo.muted ? "Unmute" : "Mute";
 	});
 
-	//TODO init gl stuff: shaders, camera, texturing.
+	//init gl stuff: shaders, camera, texturing.
 	const canvas = document.getElementById("canvas-gl");
 	const gl = canvas.getContext("webgl2");//maybe figure out if 2 is not available and default to one
 
@@ -187,13 +187,76 @@ document.addEventListener("DOMContentLoaded", function(){
 	var projProgramAttribs = ['a_Position'];
 	prepareProgramVariables(gl, projProgram, projProgramUniforms, projProgramAttribs);
 
-	//setup shaders see utils from another repo
-
 	//setup camera see Camera.js from another repo
+	var eye = new Vector3(0,0,-300);
+	var look = new Vector3(0,0,100);
+	var up = new Vector3(0,1,0);
+	var cam = new Camera(eye, look, up);
+	cam.setShape(60, canvas.width/canvas.height, 0.125, 100000); 
 
 	//texture setup
+	gl.useProgram(textureProgram);
+	gl.uniformMatrix4fv(textureProgram.u_Model, gl.FALSE, getIdentity4());//uses KFH-Utilities.js function getIdentity4()
+	gl.uniformMatrix4fv(textureProgram.u_View, gl.FALSE, cam.View);
+	gl.uniformMatrix4fv(textureProgram.u_Projection, gl.FALSE, cam.Projection);
+	gl.clearColor(0,0,0,1);
+	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-//socket = io();
+	player = {
+		turnLeft : false,
+		turnRight: false,
+		lookUp: false,
+		lookDown : false
+	};
+	document.addEventListener("keydown", function(event){
+		switch(event.keyCode){
+			 case 65: player.turnLeft = true; break;     //a
+			 case 68: player.turnRight = true; break;    //d
+			 case 83: player.lookDown = true; break;     //s
+			 case 87: player.lookUp = true; break        //w
+
+		}
+	});
+	document.addEventListener("keyup", function(event){
+		switch(event.keyCode){
+			 case 65: player.turnLeft = false; break;     //a
+			 case 68: player.turnRight = false; break;    //d
+			 case 83: player.lookDown = false; break;     //s
+			 case 87: player.lookUp = false; break        //w
+		}
+	});
+
+	//then once we get streams in our video objects we need to attach them to a square as a texture in gl
+	setInterval(function(){
+		//draw stuff
+		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+		//update rotations
+		if(player.turnLeft){
+			cam.FPSyaw(-5);
+		}
+		if(player.turnRight){
+			cam.FPSyaw(5);
+		}
+		if(player.lookUp){
+			cam.pitch(5);
+		}
+		if(player.lookDown){
+			cam.pitch(-5);
+		}
+
+		//update textures from streams
+
+		//draw rooms
+		//set program for drawing
+
+		//setup matrices
+		gl.uniformMatrix4fv(projProgram.u_Model, gl.FALSE, getIdentity4());//uses KFH-Utilities.js function getIdentity4()
+		gl.uniformMatrix4fv(projProgram.u_View, gl.FALSE, cam.View);
+		gl.uniformMatrix4fv(projProgram.u_Projection, gl.FALSE, cam.Projection);
+
+		//now draw stuff
+	}, 1000/24);
 
 	const socket = io();//defaults to whatever the url is (localhost in my case)
 	let activeSockets = [];
